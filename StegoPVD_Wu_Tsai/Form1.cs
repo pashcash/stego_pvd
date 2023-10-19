@@ -30,16 +30,12 @@ namespace StegoPVD_Wu_Tsai
             Bitmap c = new Bitmap(ImagePathTextBox.Text);
             Bitmap stego_image = new Bitmap(c.Width, c.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
             int x, y;
-
             for (x = 0; x < c.Height; x++)
             {
                 for (y = 0; y < c.Width; y++)
                 {
                     Color pixelColor = c.GetPixel(y, x);
-                    int r = pixelColor.R;
-                    int g = pixelColor.G;
-                    int b = pixelColor.B;
-                    int avg = (r + g + b) / 3;
+                    int avg = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
                     pixels.Add(avg);
                     stego_image.SetPixel(y, x, Color.FromArgb(avg,avg,avg));
                 }
@@ -65,15 +61,10 @@ namespace StegoPVD_Wu_Tsai
         public int [] EncryptPVD(int PixelLeft, int PixelRight, int i)
         {
             int DI = PixelRight - PixelLeft;
-
             int lower = LowerWidth(DI)[0];
-
             int width = LowerWidth(DI)[1];
-
             int upper = lower + width - 1;
-
             int len = (msg.Length - i >= (int) Math.Log(width, 2)) ? (int)Math.Log(width, 2) : msg.Length - i;
-
             if (LeftRightPixels(DI, PixelLeft, PixelRight, upper - DI)[0] >= 0 && LeftRightPixels(DI, PixelLeft, PixelRight, upper - DI)[0] <= 255)
             {
                 if (LeftRightPixels(DI, PixelLeft, PixelRight, upper - DI)[1] >= 0 && LeftRightPixels(DI, PixelLeft, PixelRight, upper - DI)[1] <= 255)
@@ -84,9 +75,7 @@ namespace StegoPVD_Wu_Tsai
                     i += len;
                 }
             }
-            
             int[] result = { PixelLeft, PixelRight, i };
-
             return result;
         }
 
@@ -175,34 +164,24 @@ namespace StegoPVD_Wu_Tsai
         public int DecryptPVD(int PixelLeft, int PixelRight, int i)
         {
             int DI = PixelRight - PixelLeft;
-
             int lower = LowerWidth(DI)[0];
-
             int width = LowerWidth(DI)[1];
-
             int upper = lower + width - 1;
-            
             if (LeftRightPixels(DI, PixelLeft, PixelRight, upper - DI)[0] >= 0 && LeftRightPixels(DI, PixelLeft, PixelRight, upper - DI)[0] <= 255)
             {
                 if (LeftRightPixels(DI, PixelLeft, PixelRight, upper - DI)[1] >= 0 && LeftRightPixels(DI, PixelLeft, PixelRight, upper - DI)[1] <= 255)
                 {
                     int b = (msg.Length - i >= (int)Math.Log(width, 2)) ? (int)Math.Log(width, 2) : msg.Length - i;
-
                     int b2 = newB(DI, lower);
-
                     string decode_msg_temp = Convert.ToString(b2, 2);
-
                     while (decode_msg_temp.Length < b)
                     {
                         decode_msg_temp = "0" + decode_msg_temp;
                     }
-
                     i += b;
-
                     decode_msg += decode_msg_temp;
                 }
             }
-
             return i;
         }
 
@@ -230,11 +209,9 @@ namespace StegoPVD_Wu_Tsai
                     index += 1;
                 }
             }
-
             pictureBox1.Size = image.Size;
             pictureBox1.Image = image;
             pictureBox1.Invalidate();
-
             stego_image.Save(@"C:\ПНИПУ\6 семестр\ИБИЗИ\Курсовая\Примеры\Baboon_copy.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
             pictureBox2.Size = stego_image.Size;
             pictureBox2.Image = stego_image;
